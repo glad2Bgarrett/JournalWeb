@@ -1,0 +1,10 @@
+{% extends 'journal/base.html' %}
+
+{% block content %}
+    <div>
+        <h2>{{ entry.title }}</h2>
+        <p>{{ entry.created_date }}</p>
+        <p>Read {{ entry.num_times_read }} times</p>
+        <p>{{ entry.content|linebreaksbr }}</p>
+    </div>
+{% endblock %}
