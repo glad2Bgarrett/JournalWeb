@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Entry
+from .forms import EntryForm
 from datetime import datetime
 
 
@@ -15,3 +16,15 @@ def entry_detail(request, pk):
     if entry:
         entry.entry_was_read()
     return render(request, 'journal/entry_detail.html', {'entry': entry})
+
+
+def new_entry(request):
+    if request.method == 'GET':
+        form = EntryForm()
+        return render(request, 'journal/new_entry.html', {'form': form})
+    elif request.method == 'POST':
+        form = EntryForm(request.POST)
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.save()
+        return render(request, 'journal/entry_list.html')
