@@ -6,5 +6,6 @@
         <p>{{ entry.created_date }}</p>
         <p>Read {{ entry.num_times_read }} times</p>
         <p>{{ entry.content|linebreaksbr }}</p>
+        <a href="{% url 'edit_entry' pk=entry.pk %}">Edit</a>
     </div>
 {% endblock %}
