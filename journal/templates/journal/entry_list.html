@@ -1,24 +1,33 @@
 {% extends 'journal/base.html' %}
 
 {% block content %}
-    <h2>On This Day</h2>
-    {% for on_today in todays %}
-    <div>
-        <h3><a href="{% url 'entry_detail' pk=on_today.pk %}">{{ on_today.title }}</a></h3>
-        <p>Written: {{ on_today.created_date }}</p>
-        <p>{{ on_today.content|truncatechars:500 }}</p>
-        <p>Last read: {{ entry.date_last_read }}</p>
+    <div class="container">
+        <h2>On This Day</h2>
+        {% for on_today in todays %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title"><a href="{% url 'entry_detail' pk=on_today.pk %}">{{ on_today.title }}</a></h3>
+                <p class="card-text">Written: {{ on_today.created_date }}</p>
+                <p class="card-text">{{ on_today.content|truncatechars:500 }}</p>
+                <p class="card-text">Last read: {{ entry.date_last_read }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <p>No entries on this day.</p>
+        {% endfor %}
+
+        <h2>Recent Entries</h2>
+        <div class="row">
+            {% for entry in entries %}
+            <div class="card col-md-3" style="margin:5px;">
+                <div class="card-body">
+                    <h3 class="card-title"><a href="{% url 'entry_detail' pk=entry.pk %}">{{ entry.title }}</a></h3>
+                    <p class="card-text">Written: {{ entry.created_date }}</p>
+                    <p class="card-text">{{ entry.content|truncatechars:500 }}</p>
+                    <p class="card-text">Last read: {{ entry.date_last_read }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    {% empty %}
-    <p>No entries on this day.</p>
-    {% endfor %}
-    <h2>Recent Entries</h2>
-    {% for entry in entries %}
-    <div>
-        <h3><a href="{% url 'entry_detail' pk=entry.pk %}">{{ entry.title }}</a></h3>
-        <p>Written: {{ entry.created_date }}</p>
-        <p>{{ entry.content|truncatechars:500 }}</p>
-        <p>Last read: {{ entry.date_last_read }}</p>
-    </div>
-    {% endfor %}
 {% endblock %}
