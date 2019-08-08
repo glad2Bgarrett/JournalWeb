@@ -4,11 +4,26 @@ from .forms import EntryForm
 from datetime import datetime
 
 
-def entry_list(request):
+def dashboard(request):
     entries = Entry.objects.all().order_by('-created_date')[:5]
     todays = Entry.objects.filter(created_date__month=datetime.now().month, created_date__day=datetime.now().day)\
         .order_by('created_date')
-    return render(request, 'journal/entry_list.html', {'entries': entries, 'todays': todays})
+    return render(request, 'journal/dashboard.html', {'entries': entries, 'todays': todays})
+
+
+def entry_list(request):
+    entries = Entry.objects.all().order_by('-created_date')
+    years_dict = dict()
+    for entry in entries:
+        month = entry.created_date.strftime("%B")
+        if entry.created_date.year in years_dict:
+            if month in years_dict[entry.created_date.year]:
+                years_dict[entry.created_date.year][month].append(entry)
+            else:
+                years_dict[entry.created_date.year][month] = [entry]
+        else:
+            years_dict[entry.created_date.year] = {month: [entry]}
+    return render(request, 'journal/entry_list.html', {'entries': years_dict})
 
 
 def entry_detail(request, pk):

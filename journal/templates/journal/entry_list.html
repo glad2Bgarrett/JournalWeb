@@ -1,33 +1,77 @@
 {% extends 'journal/base.html' %}
 
 {% block content %}
-    <div class="container">
-        <h2>On This Day</h2>
-        {% for on_today in todays %}
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title"><a href="{% url 'entry_detail' pk=on_today.pk %}">{{ on_today.title }}</a></h3>
-                <p class="card-text">Written: {{ on_today.created_date }}</p>
-                <p class="card-text">{{ on_today.content|truncatechars:500 }}</p>
-                <p class="card-text">Last read: {{ entry.date_last_read }}</p>
-            </div>
-        </div>
-        {% empty %}
-        <p>No entries on this day.</p>
-        {% endfor %}
-
-        <h2>Recent Entries</h2>
-        <div class="row">
-            {% for entry in entries %}
-            <div class="card col-md-3" style="margin:5px;">
-                <div class="card-body">
-                    <h3 class="card-title"><a href="{% url 'entry_detail' pk=entry.pk %}">{{ entry.title }}</a></h3>
-                    <p class="card-text">Written: {{ entry.created_date }}</p>
-                    <p class="card-text">{{ entry.content|truncatechars:500 }}</p>
-                    <p class="card-text">Last read: {{ entry.date_last_read }}</p>
-                </div>
-            </div>
+<div class="row">
+    <div class="col-md-3">
+        <ul id="yearTree">
+            {% for year, monthes in entries.items %}
+                <li><span class="caret">{{ year }}</span>
+                    <ul class="nested">
+                    {% for month, entry in monthes.items %}
+                        <li><span class="caret">{{ month }}</span>
+                        <ul class="nested">
+                            {% for e in entry %}
+                                <li>{{ e.title }}</li>
+                            {% endfor %}
+                        </ul>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     </div>
+</div>
+<style>
+    /* Remove default bullets */
+    ul, #myUL {
+      list-style-type: none;
+    }
+
+    /* Remove margins and padding from the parent ul */
+    #myUL {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Style the caret/arrow */
+    .caret {
+      cursor: pointer;
+      user-select: none; /* Prevent text selection */
+    }
+
+    /* Create the caret/arrow with a unicode, and style it */
+    .caret::before {
+      content: "\25B6";
+      color: black;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+    .caret-down::before {
+      transform: rotate(90deg);
+    }
+
+    /* Hide the nested list */
+    .nested {
+      display: none;
+    }
+
+    /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+    .active {
+      display: block;
+    }
+</style>
+<script>
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    for (i = 0; i < toggler.length; i++) {
+      toggler[i].addEventListener("click", function() {
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        this.classList.toggle("caret-down");
+      });
+    }
+</script>
 {% endblock %}
