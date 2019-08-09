@@ -11,7 +11,7 @@
                         <li><span class="caret">{{ month }}</span>
                         <ul class="nested">
                             {% for e in entry %}
-                                <li>{{ e.title }}</li>
+                                <li class="entry" onclick="entryClick({{ e.id }})">{{ e.title }}</li>
                             {% endfor %}
                         </ul>
                         </li>
@@ -21,57 +21,139 @@
             {% endfor %}
         </ul>
     </div>
+    <div class="col-md-8">
+
+    </div>
 </div>
 <style>
-    /* Remove default bullets */
-    ul, #myUL {
-      list-style-type: none;
+    .tree, .tree ul {
+    margin:0;
+    padding:0;
+    list-style:none
     }
-
-    /* Remove margins and padding from the parent ul */
-    #myUL {
-      margin: 0;
-      padding: 0;
+    .tree ul {
+        margin-left:1em;
+        position:relative
     }
-
-    /* Style the caret/arrow */
-    .caret {
-      cursor: pointer;
-      user-select: none; /* Prevent text selection */
+    .tree ul ul {
+        margin-left:.5em
     }
-
-    /* Create the caret/arrow with a unicode, and style it */
-    .caret::before {
-      content: "\25B6";
-      color: black;
-      display: inline-block;
-      margin-right: 6px;
+    .tree ul:before {
+        content:"";
+        display:block;
+        width:0;
+        position:absolute;
+        top:0;
+        bottom:0;
+        left:0;
+        border-left:1px solid
     }
-
-    /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
-    .caret-down::before {
-      transform: rotate(90deg);
+    .tree li {
+        margin:0;
+        padding:0 1em;
+        line-height:2em;
+        color:#369;
+        font-weight:700;
+        position:relative
     }
-
-    /* Hide the nested list */
-    .nested {
-      display: none;
+    .tree ul li:before {
+        content:"";
+        display:block;
+        width:10px;
+        height:0;
+        border-top:1px solid;
+        margin-top:-1px;
+        position:absolute;
+        top:1em;
+        left:0
     }
-
-    /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-    .active {
-      display: block;
+    .tree ul li:last-child:before {
+        background:#fff;
+        height:auto;
+        top:1em;
+        bottom:0
+    }
+    .indicator {
+        margin-right:5px;S
+    }
+    .tree li a {
+        text-decoration: none;
+        color:#369;
+    }
+    .tree li button, .tree li button:active, .tree li button:focus {
+        text-decoration: none;
+        color:#369;
+        border:none;
+        background:transparent;
+        margin:0px 0px 0px 0px;
+        padding:0px 0px 0px 0px;
+        outline: 0;
+    }
+    .entry {
+        cursor: pointer;
     }
 </style>
 <script>
-    var toggler = document.getElementsByClassName("caret");
-    var i;
-
-    for (i = 0; i < toggler.length; i++) {
-      toggler[i].addEventListener("click", function() {
-        this.parentElement.querySelector(".nested").classList.toggle("active");
-        this.classList.toggle("caret-down");
-      });
+    function entryClick(entryId){
+        alert(entry.title);
+        $('#entryTitle').html(entry.title);
     }
+   $.fn.extend({
+    treed: function (o) {
+
+      var openedClass = 'fa fa-minus-circle';
+      var closedClass = 'fa fa-plus-circle';
+
+      if (typeof o != 'undefined'){
+        if (typeof o.openedClass != 'undefined'){
+        openedClass = o.openedClass;
+        }
+        if (typeof o.closedClass != 'undefined'){
+        closedClass = o.closedClass;
+        }
+      };
+
+        //initialize each of the top levels
+        var tree = $(this);
+        tree.addClass("tree");
+        tree.find('li').has("ul").each(function () {
+            var branch = $(this); //li with children ul
+            branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+            branch.addClass('branch');
+            branch.on('click', function (e) {
+                if (this == e.target) {
+                    var icon = $(this).children('i:first');
+                    icon.toggleClass(openedClass + " " + closedClass);
+                    $(this).children().children().toggle();
+                }
+            })
+            branch.children().children().toggle();
+        });
+        //fire event from the dynamically added icon
+      tree.find('.branch .indicator').each(function(){
+        $(this).on('click', function () {
+            $(this).closest('li').click();
+        });
+      });
+        //fire event to open branch if the li contains an anchor instead of text
+        tree.find('.branch>a').each(function () {
+            $(this).on('click', function (e) {
+                $(this).closest('li').click();
+                e.preventDefault();
+            });
+        });
+        //fire event to open branch if the li contains a button instead of text
+        tree.find('.branch>button').each(function () {
+            $(this).on('click', function (e) {
+                $(this).closest('li').click();
+                e.preventDefault();
+            });
+        });
+    }
+});
+
+//Initialization of treeviews
+
+$('#yearTree').treed();
 </script>
 {% endblock %}
