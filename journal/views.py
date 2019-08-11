@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core import serializers
+from django.http import JsonResponse
 from .models import Entry
 from .forms import EntryForm
 from datetime import datetime
@@ -30,7 +32,8 @@ def entry_detail(request, pk):
     entry = get_object_or_404(Entry, pk=pk)
     if entry:
         entry.entry_was_read()
-    return render(request, 'journal/entry_detail.html', {'entry': entry})
+    json_entry = serializers.serialize('json', [entry])
+    return JsonResponse({'entry': json_entry})
 
 
 def new_entry(request):

@@ -22,7 +22,8 @@
         </ul>
     </div>
     <div class="col-md-8">
-
+        <h2 id="entryTitle"></h2>
+        <p id="entryContent"></p>
     </div>
 </div>
 <style>
@@ -95,9 +96,18 @@
 </style>
 <script>
     function entryClick(entryId){
-        alert(entry.title);
-        $('#entryTitle').html(entry.title);
+        var url = '/entry/' + entryId;
+        $.ajax({
+           url: url,
+           type: 'get',
+           success: function(entryObj){
+               var entry = JSON.parse(entryObj.entry)[0];
+               $('#entryTitle').text(entry.fields.title);
+               $('#entryContent').text(entry.fields.content);
+           }
+        });
     }
+
    $.fn.extend({
     treed: function (o) {
 
