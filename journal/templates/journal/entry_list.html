@@ -1,8 +1,8 @@
 {% extends 'journal/base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
+<div class="row" style="height:100%; margin-top:15px; margin-bottom:15px;">
+    <div class="col-md-2" style="height:inherit; border-right:1px solid #000066;">
         <ul id="yearTree">
             {% for year, monthes in entries.items %}
                 <li><span class="caret">{{ year }}</span>
@@ -25,8 +25,14 @@
         <h2 id="entryTitle"></h2>
         <p id="entryContent"></p>
     </div>
+    <div class="col-md-2">
+        <!-- <i class="fa fa-plus-circle" style="font-size:70px; color:#369; float:right; margin-right:15px;"/> -->
+    </div>
 </div>
 <style>
+    html, body {
+        height: 100%;
+    }
     .tree, .tree ul {
     margin:0;
     padding:0;
@@ -75,7 +81,7 @@
         bottom:0
     }
     .indicator {
-        margin-right:5px;S
+        margin-right:5px;
     }
     .tree li a {
         text-decoration: none;
