@@ -4,10 +4,10 @@
 <div class="row" style="height:100%; margin-top:15px; margin-bottom:15px;">
     <div class="col-md-2" style="height:inherit; border-right:1px solid #000066;">
         <ul id="yearTree">
-            {% for year, monthes in entries.items %}
+            {% for year, months in entries.items %}
                 <li><span class="caret">{{ year }}</span>
                     <ul class="nested">
-                    {% for month, entry in monthes.items %}
+                    {% for month, entry in months.items %}
                         <li><span class="caret">{{ month }}</span>
                         <ul class="nested">
                             {% for e in entry %}
@@ -20,13 +20,38 @@
                 </li>
             {% endfor %}
         </ul>
+        <div style="text-align:center;">
+            <button id="newEntryButton" class="btn btn-light">New Entry</button>
+        </div>
     </div>
     <div class="col-md-8">
-        <h2 id="entryTitle"></h2>
-        <p id="entryContent"></p>
+        <div id="entryReadOnly">
+            <h2 id="entryTitle"></h2>
+            <p id="entryDate"></p>
+            <hr id="entryLineBreak" style="display:none;">
+            <p id="entryContent"></p>
+        </div>
+        <div id="entryContainer" style="display:none;">
+            <form id="entryForm" action="/newentry" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" id="id_title" name="title">
+                </div>
+                <div class="form-group">
+                    <input type="date" class="form-control" id="id_created_date" name="created_date">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" rows="20" id="id_content" name="content"></textarea>
+                </div>
+                <div style="text-align:right;">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
     <div class="col-md-2">
         <!-- <i class="fa fa-plus-circle" style="font-size:70px; color:#369; float:right; margin-right:15px;"/> -->
+        <button id="editButton" class="btn btn-info" style="display:none;" onclick="editEntry()">Edit</button>
     </div>
 </div>
 <style>
@@ -101,6 +126,17 @@
     }
 </style>
 <script>
+    var selectedEntryId;
+
+    function editEntry(){
+        $('#id_title').val($('#entryTitle').text());
+        $('#id_content').val($('#entryContent').text());
+        $('#id_created_date').val($('#entryDate').text())
+        $('#entryReadOnly').hide();
+        $('#entryForm').attr('action', 'entry/' + selectedEntryId + '/edit/');
+        $('#entryContainer').show();
+    }
+
     function entryClick(entryId){
         var url = '/entry/' + entryId;
         $.ajax({
@@ -108,8 +144,13 @@
            type: 'get',
            success: function(entryObj){
                var entry = JSON.parse(entryObj.entry)[0];
+               selectedEntryId = entryId;
+               var date = new Date(entry.fields.created_date);
                $('#entryTitle').text(entry.fields.title);
                $('#entryContent').text(entry.fields.content);
+               $('#entryDate').text(date.toDateString());
+               $('#entryLineBreak').show();
+               $('#editButton').show();
            }
         });
     }

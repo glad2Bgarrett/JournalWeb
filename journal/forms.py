@@ -5,4 +5,4 @@ from .models import Entry
 class EntryForm(forms.ModelForm):
     class Meta:
         model = Entry
-        fields = ('title', 'content', 'impact_level', 'created_date')
+        fields = ('title', 'content', 'created_date')

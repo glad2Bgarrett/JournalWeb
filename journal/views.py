@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import Entry
 from .forms import EntryForm
 from datetime import datetime
@@ -25,7 +25,8 @@ def entry_list(request):
                 years_dict[entry.created_date.year][month] = [entry]
         else:
             years_dict[entry.created_date.year] = {month: [entry]}
-    return render(request, 'journal/entry_list.html', {'entries': years_dict})
+    form = EntryForm()
+    return render(request, 'journal/entry_list.html', {'entries': years_dict, 'form': form})
 
 
 def entry_detail(request, pk):
@@ -56,5 +57,5 @@ def edit_entry(request, pk):
         form = EntryForm(request.POST, instance=entry)
         if form.is_valid():
             entry = form.save()
-            return redirect('entry_detail', pk=entry.pk)
+            return HttpResponse(status=200)
     return render(request, 'journal/edit_entry.html', {'form': form})
