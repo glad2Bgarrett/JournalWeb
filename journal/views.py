@@ -14,7 +14,20 @@ def dashboard(request):
     return render(request, 'journal/dashboard.html', {'entries': entries, 'todays': todays})
 
 
+def entry_list_with_selected(request, pk):
+    years_dict = get_entry_list()
+    form = EntryForm()
+    selected = Entry.objects.get(id=pk)
+    return render(request, 'journal/entry_list.html', {'entries': years_dict, 'form': form, 'selected': selected})
+
+
 def entry_list(request):
+    years_dict = get_entry_list()
+    form = EntryForm()
+    return render(request, 'journal/entry_list.html', {'entries': years_dict, 'form': form})
+
+
+def get_entry_list():
     entries = Entry.objects.all().order_by('-created_date')
     years_dict = dict()
     for entry in entries:
@@ -26,8 +39,7 @@ def entry_list(request):
                 years_dict[entry.created_date.year][month] = [entry]
         else:
             years_dict[entry.created_date.year] = {month: [entry]}
-    form = EntryForm()
-    return render(request, 'journal/entry_list.html', {'entries': years_dict, 'form': form})
+    return years_dict
 
 
 def entry_detail(request, pk):
@@ -54,7 +66,7 @@ def new_entry(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.save()
-        return HttpResponse(status=200)
+        return redirect('entry_list_with_selected', pk=entry.pk)
 
 
 def edit_entry(request, pk):

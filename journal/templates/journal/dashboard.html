@@ -6,7 +6,7 @@
         {% for on_today in todays %}
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title"><a href="{% url 'entry_detail' pk=on_today.pk %}">{{ on_today.title }}</a></h3>
+                <h3 class="card-title"><a href="{% url 'entry_list_with_selected' pk=on_today.pk %}">{{ on_today.title }}</a></h3>
                 <p class="card-text">Written: {{ on_today.created_date }}</p>
                 <p class="card-text">{{ on_today.content|truncatechars:500 }}</p>
                 <p class="card-text">Last read: {{ entry.date_last_read }}</p>
@@ -21,7 +21,7 @@
             {% for entry in entries %}
             <div class="card col-md-3" style="margin:5px;">
                 <div class="card-body">
-                    <h3 class="card-title"><a href="{% url 'entry_detail' pk=entry.pk %}">{{ entry.title }}</a></h3>
+                    <h3 class="card-title"><a href="{% url 'entry_list_with_selected' pk=entry.pk %}">{{ entry.title }}</a></h3>
                     <p class="card-text">Written: {{ entry.created_date }}</p>
                     <p class="card-text">{{ entry.content|truncatechars:500 }}</p>
                     <p class="card-text">Last read: {{ entry.date_last_read }}</p>

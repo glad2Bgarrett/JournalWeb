@@ -26,10 +26,10 @@
     </div>
     <div class="col-md-8">
         <div id="entryReadOnly">
-            <h2 id="entryTitle"></h2>
-            <p id="entryDate"></p>
+            <h2 id="entryTitle">{{ selected.title }}</h2>
+            <p id="entryDate">{{ selected.created_date}}</p>
             <hr id="entryLineBreak" style="display:none;">
-            <p id="entryContent"></p>
+            <p id="entryContent">{{ selected.content }}</p>
         </div>
         <div id="entryContainer" style="display:none;">
             <form id="entryForm" action="/newentry" method="post">
@@ -53,6 +53,16 @@
         <!-- <i class="fa fa-plus-circle" style="font-size:70px; color:#369; float:right; margin-right:15px;"/> -->
         <button id="editButton" class="btn btn-info" style="display:none;" onclick="editEntry()">Edit</button>
         <button id="deleteButton" class="btn btn-danger" style="display:none;" onclick="deleteEntry()">Delete</button>
+    </div>
+</div>
+<div class="toast">
+    <div class="toast-header">
+      <strong class="mr-auto text-primary">Toast Header</strong>
+      <small class="text-muted">5 mins ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body">
+      Some text inside the toast body
     </div>
 </div>
 <style>
@@ -132,6 +142,7 @@
     function newEntry(){
         $('#entryReadOnly').hide();
         $('#entryContainer').show();
+        $('.toast').toast('show');
     }
 
     function deleteEntry(){
@@ -140,7 +151,7 @@
             url: url,
             type: 'post',
             success: function(status){
-                alert(status);
+                $('.toast').toast('show');
             }
         });
     }
