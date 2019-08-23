@@ -6,7 +6,7 @@ class Entry(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
-    impact_level = models.IntegerField()
+    impact_level = models.IntegerField(null=True)
     num_times_read = models.IntegerField(blank=True, null=True)
     date_last_read = models.DateTimeField(blank=True, null=True)
 

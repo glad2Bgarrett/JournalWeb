@@ -21,7 +21,7 @@
             {% endfor %}
         </ul>
         <div style="text-align:center;">
-            <button id="newEntryButton" class="btn btn-light">New Entry</button>
+            <button id="newEntryButton" class="btn btn-light" onclick="newEntry()">New Entry</button>
         </div>
     </div>
     <div class="col-md-8">
@@ -52,6 +52,7 @@
     <div class="col-md-2">
         <!-- <i class="fa fa-plus-circle" style="font-size:70px; color:#369; float:right; margin-right:15px;"/> -->
         <button id="editButton" class="btn btn-info" style="display:none;" onclick="editEntry()">Edit</button>
+        <button id="deleteButton" class="btn btn-danger" style="display:none;" onclick="deleteEntry()">Delete</button>
     </div>
 </div>
 <style>
@@ -128,6 +129,22 @@
 <script>
     var selectedEntryId;
 
+    function newEntry(){
+        $('#entryReadOnly').hide();
+        $('#entryContainer').show();
+    }
+
+    function deleteEntry(){
+        var url = 'entry/' + selectedEntryId + '/delete/';
+        $.ajax({
+            url: url,
+            type: 'post',
+            success: function(status){
+                alert(status);
+            }
+        });
+    }
+
     function editEntry(){
         $('#id_title').val($('#entryTitle').text());
         $('#id_content').val($('#entryContent').text());
@@ -151,6 +168,7 @@
                $('#entryDate').text(date.toDateString());
                $('#entryLineBreak').show();
                $('#editButton').show();
+               $('#deleteButton').show();
            }
         });
     }

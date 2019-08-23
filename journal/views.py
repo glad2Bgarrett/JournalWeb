@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Entry
 from .forms import EntryForm
 from datetime import datetime
@@ -37,6 +38,13 @@ def entry_detail(request, pk):
     return JsonResponse({'entry': json_entry})
 
 
+@csrf_exempt
+def delete_entry(request, pk):
+    entry = Entry.objects.get(id=pk)
+    entry.delete()
+    return HttpResponse(status=200)
+
+
 def new_entry(request):
     if request.method == 'GET':
         form = EntryForm()
@@ -46,7 +54,7 @@ def new_entry(request):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.save()
-        return redirect(request, 'journal/entry_detail.html', pk=entry.pk)
+        return HttpResponse(status=200)
 
 
 def edit_entry(request, pk):
