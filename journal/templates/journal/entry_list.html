@@ -55,7 +55,7 @@
         <button id="deleteButton" class="btn btn-danger" style="display:none;" onclick="deleteEntry()">Delete</button>
     </div>
 </div>
-<div class="toast">
+<div class="toast" data-delay="1000">
     <div class="toast-header">
       <strong class="mr-auto text-primary">Toast Header</strong>
       <small class="text-muted">5 mins ago</small>
@@ -135,6 +135,13 @@
     .entry {
         cursor: pointer;
     }
+
+    .toast {
+        position: absolute;
+        top: 5%;
+        right: 5%;
+    }
+
 </style>
 <script>
     var selectedEntryId;
@@ -142,6 +149,9 @@
     function newEntry(){
         $('#entryReadOnly').hide();
         $('#entryContainer').show();
+        $('#editButton').hide();
+        $('#deleteButton').hide();
+        document.getElementById('id_created_date').valueAsDate = new Date();
         $('.toast').toast('show');
     }
 
@@ -177,6 +187,8 @@
                $('#entryTitle').text(entry.fields.title);
                $('#entryContent').text(entry.fields.content);
                $('#entryDate').text(date.toDateString());
+               $('#entryReadOnly').show();
+               $('#entryContainer').hide();
                $('#entryLineBreak').show();
                $('#editButton').show();
                $('#deleteButton').show();
